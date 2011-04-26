@@ -12,7 +12,9 @@ $modx->shepherd = new Shepherd($modx);
 $modx->lexicon->load('shepherd:default');
 
 /* handle request */
+
 $path = $modx->getOption('processorsPath',$modx->shepherd->config,$corePath.'processors/');
+
 $modx->request->handleRequest(array(
     'processors_path' => $path,
     'location' => '',
