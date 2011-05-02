@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model package="shepherd" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM">
-    <object class="Article" table="articles" extends="xPDOSimpleObject">
+
+    <object class="Article" table="shepherd_articles" extends="xPDOSimpleObject">
         <field key="title" dbtype="varchar" precision="255" phptype="string" null="false" default="" />
         <field key="content" dbtype="text" phptype="string" null="false" default="" />
  
-        <field key="createdon" dbtype="datetime" phptype="datetime" null="true" />
+        <field key="createdon" dbtype="timestamp" phptype="timestamp" default="CURRENT_TIMESTAMP" null="true" />
 	<field key="status" dbtype="enum" precision="'Promoted','Published','Hidden'" phptype="string" null="false" default="Published" />
 
-        <aggregate alias="CreatedBy" class="modUser" local="createdby" foreign="id" cardinality="one" owner="foreign" />
-        <aggregate alias="Related" class="modDocument" local="related" foreign="id" cardinality="one" owner="foreign" />
+	<field key="author_id" dbtype="int" precision="11" phptype="integer" null="true" />
+        <aggregate alias="Author" class="modResource" local="author_id" foreign="id" cardinality="one" owner="foreign" />
     </object>
+
+    <object class="ArticlesResources" table="shepherd_articles_to_resources" extends="xPDOSimpleObject">
+      <field key="article_id" dbtype="int" precision="11" phptype="integer" null="true" />
+      <aggregate alias="Articles" class="Article" local="article_id" foreign="id" cardinality="one" owner="foreign" />
+
+      <field key="resource_id" dbtype="int" precision="11" phptype="integer" null="true" />
+      <aggregate alias="Resources" class="modResource" local="resource_id" foreign="id" cardinality="one" owner="foreign" />
+    </object>
+
 </model>

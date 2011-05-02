@@ -1,13 +1,14 @@
 <?php
 $xpdo_meta_map['Article']= array (
   'package' => 'shepherd',
-  'table' => 'articles',
+  'table' => 'shepherd_articles',
   'fields' => 
   array (
     'title' => '',
     'content' => '',
     'createdon' => NULL,
     'status' => 'Published',
+    'author_id' => NULL,
   ),
   'fieldMeta' => 
   array (
@@ -40,21 +41,20 @@ $xpdo_meta_map['Article']= array (
       'null' => false,
       'default' => 'Published',
     ),
+    'author_id' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '11',
+      'phptype' => 'integer',
+      'null' => true,
+    ),
   ),
   'aggregates' => 
   array (
-    'CreatedBy' => 
+    'Author' => 
     array (
-      'class' => 'modUser',
-      'local' => 'createdby',
-      'foreign' => 'id',
-      'cardinality' => 'one',
-      'owner' => 'foreign',
-    ),
-    'Related' => 
-    array (
-      'class' => 'modDocument',
-      'local' => 'related',
+      'class' => 'modResource',
+      'local' => 'author_id',
       'foreign' => 'id',
       'cardinality' => 'one',
       'owner' => 'foreign',

@@ -126,24 +126,88 @@ Shepherd.window.UpdateArticle = function(config) {
 Ext.extend(Shepherd.window.UpdateArticle,MODx.Window);
 Ext.reg('shepherd-window-article-update', Shepherd.window.UpdateArticle);
 
+Shepherd.combo.Authors = function(config) {
+    config = config || {};
+    Ext.applyIf(config,{
+	        id: 'shepherd-combo-authors'
+		,name: 'author'
+		,displayField: 'pagetitle'
+		,valueField: 'id'
+		,fields: ['id','pagetitle']
+		,url: Shepherd.config.connectorUrl
+		,baseParams: { action: 'mgr/article/getAuthorList' }
+	});
+    Shepherd.combo.Authors.superclass.constructor.call(this,config);
+};
+Ext.extend(Shepherd.combo.Authors, MODx.combo.ComboBox);
+Ext.reg('shepherd-combo-authors', Shepherd.combo.Authors);
+
+/*
+Shepherd.checkboxgroup.Sectors = function(config) {
+    config = config || {};
+    Ext.applyIf(config,{
+	        id: 'shepherd-checkboxgroup-sectors'
+		,name: 'author'
+		,displayField: 'pagetitle'
+		,valueField: 'id'
+		,fields: ['id','pagetitle']
+		,url: Shepherd.config.connectorUrl
+		,baseParams: { action: 'mgr/article/getAuthorList' }
+	});
+    Shepherd.checkboxgroup.Sectors.superclass.constructor.call(this,config);
+};
+Ext.extend(Shepherd.checkboxgroup.Sectors, Ext.form.CheckboxGroup);
+Ext.reg('shepherd-checkboxgroup-sectors', Shepherd.checkboxgroup.Sectors);
+*/
+
 Shepherd.window.CreateArticle = function(config) {
     config = config || {};
     Ext.applyIf(config,{
 	    title: _('shepherd.article_create')
-		,url: Shepherd.config.connectorUrl
-		,baseParams: { action: 'mgr/article/create' }
-	    ,fields: [{
-		    xtype: 'textfield'
-			 ,fieldLabel: _('shepherd.article_title')
-			 ,name: 'title'
-			 ,width: 300
-			 },{
-		    xtype: 'textarea'
-			 ,fieldLabel: _('shepherd.article_content')
-			 ,name: 'content'
-			 ,width: 300
-			 }]
-		 });
+	   ,url: Shepherd.config.connectorUrl
+	   ,baseParams: { action: 'mgr/article/create' }
+	   ,width: 900
+	   ,fields: 
+	      [{ xtype: 'textfield'
+		     ,fieldLabel: _('shepherd.article_title')
+  		     ,name: 'title'
+		     ,width: 300
+		     },{
+		 xtype: 'tinymce'
+			,tinymceSettings: {
+			theme : "advanced",
+			    theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|"
+			    + ",justifyleft,justifycenter,justifyright,justifyfull,|,styleselect"
+			    + ",formatselect,fontselect,fontsizeselect",
+			    theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|"
+			    + ",search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|"
+			    + ",undo,redo,|,link,unlink,anchor,image,cleanup,code,|"
+			    + ",insertdate,inserttime,preview,|,forecolor,backcolor",
+			    theme_advanced_buttons3: "",
+			    theme_advanced_toolbar_location : "top",
+			    theme_advanced_toolbar_align : "left",
+			    theme_advanced_statusbar_location : "bottom",
+			    theme_advanced_resizing : false,
+			    extended_valid_elements : "a[name|href|target|title|onclick]"
+			    + ",img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name]"
+			    + ",hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]",
+			    template_external_list_url : "template_list.js",
+			    accessibility_focus : false
+                      }
+		     ,fieldLabel: _('shepherd.article_content')
+		     ,name: 'content'
+		     ,id: 'shepherd-article-content'
+		     ,width: 700
+		     },{
+		 xtype: 'shepherd-combo-authors'
+		     ,fieldLabel: 'Author'
+			       },{
+		    xtype: 'checkboxgroup'
+			       ,fieldLabel: 'Practice Areas'
+			       ,items: checkboxArray
+			       }
+		  ]
+    });
     Shepherd.window.CreateArticle.superclass.constructor.call(this,config);
 };
 Ext.extend(Shepherd.window.CreateArticle, MODx.Window);
