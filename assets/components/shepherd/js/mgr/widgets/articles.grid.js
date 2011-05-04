@@ -4,7 +4,7 @@ Shepherd.grid.Articles = function(config) {
 	    id: 'shepherd-grid-articles'
 		,url: Shepherd.config.connectorUrl
 		,baseParams: { action: 'mgr/article/getList' }
-	        ,fields: ['id','title','content']
+	    ,fields: ['id','title','author','related_to','status','content','author_id','related_ids']
 		,paging: true
 		,remoteSort: true
 		,anchor: '97%'
@@ -15,20 +15,29 @@ Shepherd.grid.Articles = function(config) {
 		    header: _('id')
 			 ,dataIndex: 'id'
 			 ,sortable: true
-			 ,width: 60
+			 ,width: 20
 			 },{
+		    header: _('shepherd.article_status')
+			  ,dataIndex: 'status'
+			  ,width: 40
+			 ,sortable: true
+			 ,editor: { xtype: 'shepherd-combo-statuses' }
+			  },{
+		    header: _('shepherd.article_author')
+			  ,dataIndex: 'author'
+			  ,sortable: true
+			  ,width: 50
+			  ,editor: { xtype: 'shepherd-combo-authors' }
+		},{
 		    header: _('shepherd.article_title')
 			 ,dataIndex: 'title'
 			 ,sortable: true
 			 ,width: 100
 			 ,editor: { xtype: 'textfield' }
 		},{
-		    header: _('shepherd.article_content')
-				   ,dataIndex: 'content'
-				   ,sortable: false
-				   ,width: 350
-				   ,editor: { xtype: 'textfield' }
-		}]
+		    header: _('shepherd.article_related_to')
+			  ,dataIndex: 'related_to'
+			  }]
 		,tbar:[{
 		    xtype: 'textfield'
 		     ,id: 'articles-search-filter'
@@ -84,7 +93,18 @@ Ext.extend(Shepherd.grid.Articles,MODx.grid.Grid,{
 	    } else {
 		this.updateArticleWindow.setValues(this.menu.record);
 	    }
-	    this.updateArticleWindow.show(e.target);
+	    if(this.menu.record.related_ids) {
+		var relatedIds = this.menu.record.related_ids.split(',');
+		Ext.each(relatedIds, function(id, index) {
+			relatedIds[index] = parseInt(id);
+		});
+	        for(var i=0; i<sectorArray.length; i++) {
+		    if(!(relatedIds.indexOf(parseInt(sectorArray[i]['id'])) === -1)) {
+			sectorArray[i]['checked'] = true;
+                   }
+		}
+	    }
+       	    this.updateArticleWindow.show(e.target);
 	}
 	,removeArticle: function() {
 	    MODx.msg.confirm({
@@ -106,20 +126,58 @@ Shepherd.window.UpdateArticle = function(config) {
 	    title: _('shepherd.article_update')
 		,url: Shepherd.config.connectorUrl
 		,baseParams: { action: 'mgr/article/update' }
-	    ,fields: [{
-		    xtype: 'hidden'
-			 ,name: 'id'
-			 },{
-		    xtype: 'textfield'
-			 ,fieldLabel: _('shepherd.article_title')
-			 ,name: 'title'
-			 ,width: 300
-			 },{
-		    xtype: 'textarea'
-			 ,fieldLabel: _('shepherd.article_content')
-			 ,name: 'content'
-			 ,width: 300
-	    }]
+	    ,width: 800
+	    ,fields: 
+	      [{ xtype: 'textfield'
+		     ,fieldLabel: _('shepherd.article_title')
+  		     ,name: 'title'
+		     ,width: 300
+		     },{
+		 xtype: 'tinymce'
+			,tinymceSettings: {
+			theme : "advanced",
+			    theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|"
+			    + ",justifyleft,justifycenter,justifyright,justifyfull,|,styleselect"
+			    + ",formatselect,fontselect,fontsizeselect",
+			    theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|"
+			    + ",search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|"
+			    + ",undo,redo,|,link,unlink,anchor,image,cleanup,code,|"
+			    + ",insertdate,inserttime,preview,|,forecolor,backcolor",
+			    theme_advanced_buttons3: "",
+			    theme_advanced_toolbar_location : "top",
+			    theme_advanced_toolbar_align : "left",
+			    theme_advanced_statusbar_location : "bottom",
+			    theme_advanced_resizing : false,
+			    extended_valid_elements : "a[name|href|target|title|onclick]"
+			    + ",img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name]"
+			    + ",hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]",
+			    template_external_list_url : "template_list.js",
+			    accessibility_focus : false
+                      }
+		     ,fieldLabel: _('shepherd.article_content')
+		     ,name: 'content'
+		     ,id: 'shepherd-article-content'
+		     ,width: 700
+		     },{
+		 xtype: 'shepherd-combo-authors'
+		     ,fieldLabel: 'Author'
+			       ,name: 'author'
+			       },{
+		    xtype: 'checkboxgroup'
+			       ,fieldLabel: 'Sectors'
+			       ,name: 'sectors'
+			       ,items: sectorArray
+			       },{
+		    xtype: 'checkboxgroup'
+			       ,fieldLabel: 'Practice Areas'
+					 ,name: 'practice_areas'
+			       ,items: practiceAreaArray
+					 }/* , {
+		    xtype: 'shepherd-combo-statuses'
+					 ,fieldLabel: 'Status'
+					 ,name: 'status'
+					 }*/
+		  ]
     });
     Shepherd.window.UpdateArticle.superclass.constructor.call(this,config);
 };
@@ -132,6 +190,7 @@ Shepherd.combo.Authors = function(config) {
 	        id: 'shepherd-combo-authors'
 		,name: 'author'
 		,displayField: 'pagetitle'
+		,hiddenName: 'author_id'
 		,valueField: 'id'
 		,fields: ['id','pagetitle']
 		,url: Shepherd.config.connectorUrl
@@ -142,23 +201,25 @@ Shepherd.combo.Authors = function(config) {
 Ext.extend(Shepherd.combo.Authors, MODx.combo.ComboBox);
 Ext.reg('shepherd-combo-authors', Shepherd.combo.Authors);
 
-/*
-Shepherd.checkboxgroup.Sectors = function(config) {
+Shepherd.combo.Statuses = function(config) {
     config = config || {};
     Ext.applyIf(config,{
-	        id: 'shepherd-checkboxgroup-sectors'
-		,name: 'author'
-		,displayField: 'pagetitle'
-		,valueField: 'id'
-		,fields: ['id','pagetitle']
-		,url: Shepherd.config.connectorUrl
-		,baseParams: { action: 'mgr/article/getAuthorList' }
+	        id: 'shepherd-combo-statuses'
+		,name: 'status'
+		,displayField: 'key'
+		,valueField: 'value'
+		,mode: 'local'
+		,store: new Ext.data.ArrayStore({
+			id: 0
+			    ,fields: ['key', 'value']
+			    ,data: [['Published', 'Published'], ['Promoted', 'Promoted'], ['Hidden', 'Hidden']]
+			    })
+
 	});
-    Shepherd.checkboxgroup.Sectors.superclass.constructor.call(this,config);
+    Shepherd.combo.Statuses.superclass.constructor.call(this,config);
 };
-Ext.extend(Shepherd.checkboxgroup.Sectors, Ext.form.CheckboxGroup);
-Ext.reg('shepherd-checkboxgroup-sectors', Shepherd.checkboxgroup.Sectors);
-*/
+Ext.extend(Shepherd.combo.Statuses, MODx.combo.ComboBox);
+Ext.reg('shepherd-combo-statuses', Shepherd.combo.Statuses);
 
 Shepherd.window.CreateArticle = function(config) {
     config = config || {};
@@ -201,11 +262,22 @@ Shepherd.window.CreateArticle = function(config) {
 		     },{
 		 xtype: 'shepherd-combo-authors'
 		     ,fieldLabel: 'Author'
+			       ,name: 'author'
+			       },{
+		    xtype: 'checkboxgroup'
+			       ,fieldLabel: 'Sectors'
+			       ,name: 'sectors'
+			       ,items: sectorArray
 			       },{
 		    xtype: 'checkboxgroup'
 			       ,fieldLabel: 'Practice Areas'
-			       ,items: checkboxArray
-			       }
+					 ,name: 'practice_areas'
+			       ,items: practiceAreaArray
+					 }/* , {
+		    xtype: 'shepherd-combo-statuses'
+					 ,fieldLabel: 'Status'
+					 ,name: 'status'
+					 }*/
 		  ]
     });
     Shepherd.window.CreateArticle.superclass.constructor.call(this,config);

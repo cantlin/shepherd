@@ -22,6 +22,8 @@ $_lang['shepherd.management_desc'] = 'Welcome to Shepherd. You can update articl
 $_lang['shepherd.article_title'] = 'Title';
 $_lang['shepherd.article_content'] = 'Content';
 $_lang['shepherd.article_author'] = 'Author';
+$_lang['shepherd.article_related_to'] = 'Related To';
+$_lang['shepherd.article_status'] = 'Status';
 
 $_lang['shepherd.article_create'] = 'Create New Article';
 $_lang['shepherd.article_remove'] = 'Remove Article';

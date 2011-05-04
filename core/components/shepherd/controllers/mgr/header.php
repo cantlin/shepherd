@@ -11,23 +11,43 @@ $modx->regClientStartupHTMLBlock(
 Ext.onReady(function() {
     Shepherd.config = '.$modx->toJSON($shepherd->config).';
 
-checkboxArray = [];
+practiceAreaArray = [];
 
-var authorStore = new Ext.data.JsonStore({ url: Shepherd.config.connectorUrl                                                           
-     ,root: "results"
-     ,baseParams: { action: "mgr/resource/getList" ,parent: 123 }                                                                          
-     ,fields: ["id", "pagetitle"]                                                                                                  
-     ,autoLoad: false
-     ,listeners: {
-        load: function(t, records, options) {
-            for (var i=0; i<records.length; i++) {
-            checkboxArray.push({id: records[i].data.id, boxLabel: records[i].data.pagetitle});
-            }   
-        }   
-    }  
+var practiceAreaStore = new Ext.data.JsonStore({
+   url: Shepherd.config.connectorUrl                                                           
+  ,root: "results"
+  ,baseParams: { action: "mgr/resource/getList" ,parent: 123 }
+  ,fields: ["id", "pagetitle"]
+  ,autoLoad: false
+  ,listeners: {
+      load: function(t, records, options) {
+          for (var i=0; i<records.length; i++) {
+          practiceAreaArray.push({name: "practice_areas[]", id: records[i].data.id, boxLabel: records[i].data.pagetitle});
+          }
+      }   
+  }  
 });
 
-authorStore.load();
+practiceAreaStore.load();
+
+sectorArray = [];
+
+var sectorStore = new Ext.data.JsonStore({
+   url: Shepherd.config.connectorUrl                                                           
+  ,root: "results"
+  ,baseParams: { action: "mgr/resource/getList" ,parent: 124 }
+  ,fields: ["id", "pagetitle"]
+  ,autoLoad: false
+  ,listeners: {
+      load: function(t, records, options) {
+          for (var i=0; i<records.length; i++) {
+          sectorArray.push({name: "sectors[]", id: records[i].data.id, boxLabel: records[i].data.pagetitle});
+          }   
+      }   
+  }  
+});
+
+sectorStore.load();
 
 });
 </script>'

@@ -6,7 +6,7 @@ $xpdo_meta_map['Article']= array (
   array (
     'title' => '',
     'content' => '',
-    'createdon' => NULL,
+    'createdon' => 'CURRENT_TIMESTAMP',
     'status' => 'Published',
     'author_id' => NULL,
   ),
@@ -29,8 +29,9 @@ $xpdo_meta_map['Article']= array (
     ),
     'createdon' => 
     array (
-      'dbtype' => 'datetime',
-      'phptype' => 'datetime',
+      'dbtype' => 'timestamp',
+      'phptype' => 'timestamp',
+      'default' => 'CURRENT_TIMESTAMP',
       'null' => true,
     ),
     'status' => 
