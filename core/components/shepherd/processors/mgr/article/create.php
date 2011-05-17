@@ -14,9 +14,8 @@ if(empty($scriptProperties['title']))
 if($modx->error->hasError())
   return $modx->error->failure();
 
-$sectors = (isset($scriptProperties['sectors'])) ? $scriptProperties['sectors'] : array();
-$practice_areas = (isset($scriptProperties['practice_areas'])) ? $scriptProperties['practice_areas'] : array();
-unset($scriptProperties['practice_areas'], $scriptProperties['sectors']);
+$related_to = (isset($scriptProperties['related_to'])) ? $scriptProperties['related_to'] : array();
+unset($scriptProperties['related_to']);
  
 $article = $modx->newObject('Article');
 $article->fromArray($scriptProperties);
@@ -26,7 +25,7 @@ if ($article->save() == false)
 
 $new_article_id = $article->get('id');
 
-foreach(array_merge($sectors, $practice_areas) as $resource_id => $v) {
+foreach($related_to as $resource_id) {
 
   $sql = "INSERT INTO modx_shepherd_articles_to_resources " .
          "(article_id, resource_id) " .

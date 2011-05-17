@@ -1,19 +1,23 @@
 <?php
 
-function getRelatedTo($id, $delim = ', ') {
+function getRelatedTo($id, $parent = null, $delim = ', ') {
  global $modx;
 
  $sql = "SELECT satr.resource_id, sc.pagetitle " .
          "FROM modx_shepherd_articles_to_resources AS satr " .
-         "JOIN modx_site_content AS sc ON satr.resource_id = sc.id " .
-         "WHERE article_id = " . $id;
+        "JOIN modx_site_content AS sc ON satr.resource_id = sc.id";
+
+ if(!is_null($parent))
+   $sql .= " AND sc.parent IN (" . $parent . ")";
+
+ $sql .= " WHERE article_id = " . $id;
 
  $query = $modx->db->query($sql);
 
  $o = array();
 
  while($row = $modx->db->getRow($query)) {
-   $o['titles'][] = $row['pagetitle'];
+   $o['titles'][] = formatUserTitle($row['pagetitle']);
    $o['ids'][] = $row['resource_id'];
  }
 
@@ -21,6 +25,10 @@ function getRelatedTo($id, $delim = ', ') {
  $o['titles'] = implode(', ', $o['titles']);
 
  return $o;    
+}
+
+function formatUserTitle($input) {
+  return reset(explode(' (', $input));
 }
 
 $isLimit = !empty($scriptProperties['limit']);
@@ -50,14 +58,15 @@ $list = array();
 foreach ($articles as $article) {
 
   $author = $modx->getObject('modResource', $article->author_id);
-  $related = getRelatedTo($article->getPrimaryKey());
+  $related = getRelatedTo($article->getPrimaryKey(), '123,124');
+  $people = getRelatedTo($article->getPrimaryKey(), 10);
 
   $list[] = array_merge(
       $article->toArray(),
       array(
-	    'author' => reset(explode(' (', $author->pagetitle)),
 	    'related_to' => $related['titles'],
-    	    'related_ids' => $related['ids']
+	    'contacts' => $people['titles'],
+    	    'related_ids' => $related['ids'] . ',' . $people['ids']
 	    )
       );
 }

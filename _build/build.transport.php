@@ -6,7 +6,7 @@ set_time_limit(0);
  
 define('PKG_NAME', 'Shepherd');
 define('PKG_NAME_LOWER', 'shepherd');
-define('PKG_VERSION', '0.1');
+define('PKG_VERSION', '0.24');
 define('PKG_RELEASE', 'alpha');
  
 $root = dirname(dirname(__FILE__)).'/';

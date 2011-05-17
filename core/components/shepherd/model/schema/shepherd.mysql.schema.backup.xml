@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model package="shepherd" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM">
+
+    <object class="Article" table="shepherd_articles" extends="xPDOSimpleObject">
+        <field key="title" dbtype="varchar" precision="255" phptype="string" null="false" default="" />
+        <field key="content" dbtype="text" phptype="string" null="false" default="" />
+ 
+        <field key="createdon" dbtype="timestamp" phptype="timestamp" default="CURRENT_TIMESTAMP" null="true" />
+	<field key="status" dbtype="enum" precision="'Promoted','Published','Hidden'" phptype="string" null="false" default="Published" />
+
+	<field key="author_id" dbtype="int" precision="11" phptype="integer" null="true" />
+    </object>
+
+    <object class="ArticlesResources" table="shepherd_articles_to_resources" extends="xPDOSimpleObject">
+      <field key="article_id" dbtype="int" precision="11" phptype="integer" null="true" />
+      <field key="resource_id" dbtype="int" precision="11" phptype="integer" null="true" />
+mkd    </object>
+
+</model>

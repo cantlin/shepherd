@@ -4,7 +4,7 @@ Shepherd.grid.Articles = function(config) {
 	    id: 'shepherd-grid-articles'
 		,url: Shepherd.config.connectorUrl
 		,baseParams: { action: 'mgr/article/getList' }
-	    ,fields: ['id','title','author','related_to','status','content','author_id','related_ids','contacts']
+	    ,fields: ['id','title','author','related_to','status','content','author_id','related_ids']
 		,paging: true
 		,remoteSort: true
 		,anchor: '97%'
@@ -23,14 +23,17 @@ Shepherd.grid.Articles = function(config) {
 			 ,sortable: true
 			 ,editor: { xtype: 'shepherd-combo-statuses' }
 			  },{
+		    header: _('shepherd.article_author')
+			  ,dataIndex: 'author'
+			  ,sortable: true
+			  ,width: 50
+			  ,editor: { xtype: 'shepherd-combo-authors' }
+		},{
 		    header: _('shepherd.article_title')
 			 ,dataIndex: 'title'
 			 ,sortable: true
 			 ,width: 100
 			 ,editor: { xtype: 'textfield' }
-		},{
-		    header: _('shepherd.article_contacts')
-			  ,dataIndex: 'contacts'
 		},{
 		    header: _('shepherd.article_related_to')
 			  ,dataIndex: 'related_to'
@@ -79,7 +82,7 @@ Ext.extend(Shepherd.grid.Articles,MODx.grid.Grid,{
 	    return true;
 	}
 	,updateArticle: function(btn,e) {
-	        if (!this.updateArticleWindow) {
+	    if (!this.updateArticleWindow) {
 		this.updateArticleWindow = MODx.load({
 			xtype: 'shepherd-window-article-update'
 			,record: this.menu.record
@@ -87,9 +90,9 @@ Ext.extend(Shepherd.grid.Articles,MODx.grid.Grid,{
 			    'success': {fn:this.refresh,scope:this}
 			}
 		    });
-		    } else {
-			this.updateArticleWindow.setValues(this.menu.record);
-		   }
+	    } else {
+		this.updateArticleWindow.setValues(this.menu.record);
+	    }
 	    if(this.menu.record.related_ids) {
 		var relatedIds = this.menu.record.related_ids.split(',');
 		Ext.each(relatedIds, function(id, index) {
@@ -105,11 +108,10 @@ Ext.extend(Shepherd.grid.Articles,MODx.grid.Grid,{
 		}
 	    }
        	    this.updateArticleWindow.show(e.target);
-            Ext.getCmp('update-contacts').setValue(relatedIds);
 	}
 	,removeArticle: function() {
 	    MODx.msg.confirm({
- title: _('shepherd.article_remove')
+		    title: _('shepherd.article_remove')
 			,text: _('shepherd.article_remove_confirm')
 			,url: this.config.url
 			,params: { action: 'mgr/article/remove' ,id: this.menu.record.id }
@@ -127,7 +129,7 @@ Shepherd.window.UpdateArticle = function(config) {
 	    title: _('shepherd.article_update')
 		,url: Shepherd.config.connectorUrl
 		,baseParams: { action: 'mgr/article/update' }
-	    ,width: 900
+	    ,width: 800
 	    ,fields: 
 	       [{ xtype: 'hidden'
 		      ,name: 'id'
@@ -135,7 +137,7 @@ Shepherd.window.UpdateArticle = function(config) {
 		  xtype: 'textfield'
 		     ,fieldLabel: _('shepherd.article_title')
   		     ,name: 'title'
-		     ,width: 350
+		     ,width: 300
 		     },{
 		 xtype: 'tinymce'
 			,tinymceSettings: {
@@ -160,22 +162,12 @@ Shepherd.window.UpdateArticle = function(config) {
                       }
 		     ,fieldLabel: _('shepherd.article_content')
 		     ,name: 'content'
-		     ,id: 'shepherd-article-update-content'
+		     ,id: 'shepherd-article-content'
 		     ,width: 700
 		     },{
-			       id:'update-contacts',
-			       xtype:'superboxselect',
-			       fieldLabel: 'Contacts',
-			       emptyText: 'Select the Shepherd and Wedderburn personnel associated with this article.',
-			       allowBlank:true,
-			       name: 'related_to[]',
-			       width: 700,
-			       store: peopleStore,
-			       //			       value: relatedIds,
-			       mode: 'local',
-			       displayField: 'pagetitle',
-			       displayFieldTpl: '{pagetitle}',
-			       valueField: 'id',
+		 xtype: 'shepherd-combo-authors'
+		     ,fieldLabel: 'Author'
+			       ,name: 'author'
 			       },{
 		    xtype: 'checkboxgroup'
 			       ,fieldLabel: 'Sectors'
@@ -200,7 +192,7 @@ Shepherd.window.UpdateArticle = function(config) {
 Ext.extend(Shepherd.window.UpdateArticle,MODx.Window);
 Ext.reg('shepherd-window-article-update', Shepherd.window.UpdateArticle);
 
-Shepherd.combo.Authors = function(config) {
+/* Shepherd.combo.Authors = function(config) {
     config = config || {};
     Ext.applyIf(config,{
 	        id: 'shepherd-combo-authors'
@@ -212,34 +204,10 @@ Shepherd.combo.Authors = function(config) {
 		,url: Shepherd.config.connectorUrl
 		,baseParams: { action: 'mgr/article/getAuthorList' }
 	});
-    Shepherd.combo.Authors.superclass.constructor.call(this, config);
+    Shepherd.combo.Authors.superclass.constructor.call(this,config);
 };
 Ext.extend(Shepherd.combo.Authors, MODx.combo.ComboBox);
-Ext.reg('shepherd-combo-authors', Shepherd.combo.Authors);
-
-/* contactsSuperbox = 
-function(config) {
-    config = config || {};
-    Ext.applyIf(config, {
-       xtype:'superboxselect',
-		id:'contacts',
-		fieldLabel: 'Contacts',
-		emptyText: 'Select the Shepherd and Wedderburn personnel associated with this article.',
-		allowBlank:true,
-		name: 'related_to[]',
-		width: 700,
-		store: peopleStore,
-		mode: 'local',
-		displayField: 'pagetitle',
-		displayFieldTpl: '{pagetitle}',
-		valueField: 'id',
-	});
-    Shepherd.form.Contacts.superclass.constructor.class(this, config);
-};
-Ext.extend(Shepherd.form.Contacts, Ext.ux.form.SuperBoxSelect);
-Ext.reg('shepherd-contacts-superbox', Shepherd.form.Contacts);
-*/
-// new Ext.ux.form.SuperBoxSelect({
+Ext.reg('shepherd-combo-authors', Shepherd.combo.Authors); */
 
 Shepherd.combo.Statuses = function(config) {
     config = config || {};
@@ -294,33 +262,36 @@ Shepherd.window.CreateArticle = function(config) {
 			    + ",hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]",
 			    template_external_list_url : "template_list.js",
 			    accessibility_focus : false
-                      }
+		    }
 		     ,fieldLabel: _('shepherd.article_content')
 		     ,name: 'content'
-		     ,id: 'shepherd-article-create-content'
+		     ,id: 'shepherd-article-content'
 		     ,width: 700
-		     }, {
-			       id:'create-contacts',
+			  }
+		  /* ,{
+			       id:'contacts',
 			       xtype:'superboxselect',
-			       fieldLabel: _('shepherd.article_contacts'),
+			       fieldLabel: 'Contacts',
 			       emptyText: 'Select the Shepherd and Wedderburn personnel associated with this article.',
 			       allowBlank:true,
-			       name: 'related_to[]',
+			       name: 'people',
 			       width: 700,
+			       //anchor:'100%',
 			       store: peopleStore,
 			       mode: 'local',
 			       displayField: 'pagetitle',
 			       displayFieldTpl: '{pagetitle}',
-			       valueField: 'id'
-			       },{
+			       valueField: 'id',
+			       } */
+			       ,{
 		    xtype: 'checkboxgroup'
-				,fieldLabel: _('shepherd.article_sectors')
+			       ,fieldLabel: 'Sectors'
 			       ,name: 'sectors'
 			       ,columns: [230, 230, 1.0]
 			       ,items: sectorArray
 			       },{
 		    xtype: 'checkboxgroup'
-					 ,fieldLabel: _('shepherd.article_practice_areas')
+			       ,fieldLabel: 'Practice Areas'
 			       ,name: 'practice_areas'
 			       ,columns: [230, 230, 1.0]
 			       ,items: practiceAreaArray
