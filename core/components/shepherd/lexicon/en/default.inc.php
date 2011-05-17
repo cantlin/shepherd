@@ -26,6 +26,7 @@ $_lang['shepherd.article_sectors'] = 'Sectors';
 $_lang['shepherd.article_practice_areas'] = 'Practice Areas';
 $_lang['shepherd.article_related_to'] = 'Related Areas';
 $_lang['shepherd.article_status'] = 'Status';
+$_lang['shepherd.article_publication'] = 'Publication';
 
 $_lang['shepherd.article_create'] = 'Create New Article';
 $_lang['shepherd.article_remove'] = 'Remove Article';

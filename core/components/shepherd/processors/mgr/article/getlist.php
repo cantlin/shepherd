@@ -1,34 +1,34 @@
 <?php
+function getRelatedTo($id, $parent = null, $template = null, $delim = ', ') {
+  global $modx;
 
-function getRelatedTo($id, $parent = null, $delim = ', ') {
- global $modx;
-
- $sql = "SELECT satr.resource_id, sc.pagetitle " .
+  $sql = "SELECT satr.resource_id, sc.pagetitle " .
          "FROM modx_shepherd_articles_to_resources AS satr " .
-        "JOIN modx_site_content AS sc ON satr.resource_id = sc.id";
+         "JOIN modx_site_content AS sc ON satr.resource_id = sc.id";
 
- if(!is_null($parent))
-   $sql .= " AND sc.parent IN (" . $parent . ")";
+  if(!is_null($parent))
+    $sql .= " AND sc.parent IN (" . $parent . ")";
+   
+  if(!is_null($template))
+    $sql .= " AND sc.template IN (" . $template . ")";
 
- $sql .= " WHERE article_id = " . $id;
+  $sql .= " WHERE article_id = " . $id;
 
- $query = $modx->db->query($sql);
+  $query = $modx->db->query($sql);
 
- $o = array();
+  $o = array();
 
- while($row = $modx->db->getRow($query)) {
-   $o['titles'][] = formatUserTitle($row['pagetitle']);
-   $o['ids'][] = $row['resource_id'];
- }
+  while($row = $modx->db->getRow($query)) {
+    $o['titles'][] = $row['pagetitle'];
+    $o['ids'][] = $row['resource_id'];
+  }
 
- $o['ids'] = implode(',', $o['ids']);
- $o['titles'] = implode(', ', $o['titles']);
+  if(!empty($o)) {
+    $o['ids'] = implode(',', $o['ids']);
+    $o['titles'] = implode(', ', $o['titles']);
+  }
 
- return $o;    
-}
-
-function formatUserTitle($input) {
-  return reset(explode(' (', $input));
+  return $o;
 }
 
 $isLimit = !empty($scriptProperties['limit']);
@@ -47,19 +47,19 @@ if(!empty($query)) {
   ));
 }
 
-$count = $modx->getCount('Article',$c);
-
 $c->sortby($sort,$dir);
 if ($isLimit) $c->limit($limit,$start);
 
+$count = $modx->getCount('Article',$c);
+
 $articles = $modx->getIterator('Article', $c);
 $list = array();
+$i = 0;
 
 foreach ($articles as $article) {
-
-  $author = $modx->getObject('modResource', $article->author_id);
+  $i++;
   $related = getRelatedTo($article->getPrimaryKey(), '123,124');
-  $people = getRelatedTo($article->getPrimaryKey(), 10);
+  $people = getRelatedTo($article->getPrimaryKey(), null, '2');
 
   $list[] = array_merge(
       $article->toArray(),

@@ -6,9 +6,9 @@ $xpdo_meta_map['Article']= array (
   array (
     'title' => '',
     'content' => '',
+    'publication' => '',
     'createdon' => 'CURRENT_TIMESTAMP',
     'status' => 'Published',
-    'author_id' => NULL,
   ),
   'fieldMeta' => 
   array (
@@ -27,6 +27,14 @@ $xpdo_meta_map['Article']= array (
       'null' => false,
       'default' => '',
     ),
+    'publication' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '255',
+      'phptype' => 'string',
+      'null' => false,
+      'default' => '',
+    ),
     'createdon' => 
     array (
       'dbtype' => 'timestamp',
@@ -41,24 +49,6 @@ $xpdo_meta_map['Article']= array (
       'phptype' => 'string',
       'null' => false,
       'default' => 'Published',
-    ),
-    'author_id' => 
-    array (
-      'dbtype' => 'int',
-      'precision' => '11',
-      'phptype' => 'integer',
-      'null' => true,
-    ),
-  ),
-  'aggregates' => 
-  array (
-    'Author' => 
-    array (
-      'class' => 'modResource',
-      'local' => 'author_id',
-      'foreign' => 'id',
-      'cardinality' => 'one',
-      'owner' => 'foreign',
     ),
   ),
 );

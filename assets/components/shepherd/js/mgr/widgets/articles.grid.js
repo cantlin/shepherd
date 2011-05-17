@@ -4,7 +4,15 @@ Shepherd.grid.Articles = function(config) {
 	    id: 'shepherd-grid-articles'
 		,url: Shepherd.config.connectorUrl
 		,baseParams: { action: 'mgr/article/getList' }
-	    ,fields: ['id','title','author','related_to','status','content','author_id','related_ids','contacts']
+	        ,fields: ['id'
+			  ,'createdon'
+			  ,'title'
+			  ,'related_to'
+			  ,'related_ids'
+			  ,'status'
+			  ,'content'
+			  ,'contacts'
+			  ,'publication']
 		,paging: true
 		,remoteSort: true
 		,anchor: '97%'
@@ -17,9 +25,14 @@ Shepherd.grid.Articles = function(config) {
 			 ,sortable: true
 			 ,width: 20
 			 },{
+		    header: _('createdon')
+			 ,dataIndex: 'createdon'
+			 ,sortable: true
+			 ,width: 52
+			 },{
 		    header: _('shepherd.article_status')
-			  ,dataIndex: 'status'
-			  ,width: 40
+			 ,dataIndex: 'status'
+			 ,width: 40
 			 ,sortable: true
 			 ,editor: { xtype: 'shepherd-combo-statuses' }
 			  },{
@@ -28,13 +41,18 @@ Shepherd.grid.Articles = function(config) {
 			 ,sortable: true
 			 ,width: 100
 			 ,editor: { xtype: 'textfield' }
-		},{
+                         },{
 		    header: _('shepherd.article_contacts')
-			  ,dataIndex: 'contacts'
-		},{
+			 ,dataIndex: 'contacts'
+		         },{
 		    header: _('shepherd.article_related_to')
-			  ,dataIndex: 'related_to'
-			  }]
+			 ,dataIndex: 'related_to'
+			 },{
+		    header: _('shepherd.article_publication')
+			 ,dataIndex: 'publication'
+			 ,sortable: true
+			 ,width: 50
+		    }]
 		,tbar:[{
 		    xtype: 'textfield'
 		     ,id: 'articles-search-filter'
@@ -188,7 +206,14 @@ Shepherd.window.UpdateArticle = function(config) {
 			       ,name: 'practice_areas'
 			       ,columns: [230, 230, 1.0]
 			       ,items: practiceAreaArray
-					 } /*, {
+			       },{
+		    xtype: 'textfield'
+			       ,fieldLabel: _('shepherd.article_publication')
+			       ,name: 'publication'
+			       ,width: 350
+		   }
+
+ /*, {
 		    xtype: 'shepherd-combo-statuses'
 					 ,fieldLabel: 'Status'
 					 ,name: 'status'
@@ -325,7 +350,15 @@ Shepherd.window.CreateArticle = function(config) {
 			       ,columns: [230, 230, 1.0]
 			       ,items: practiceAreaArray
 			       
-					 }/* , {
+					 },{
+		  xtype: 'textfield'
+		     ,fieldLabel: _('shepherd.article_publication')
+  		     ,name: 'publication'
+		     ,width: 350
+		   }
+
+
+/* , {
 		    xtype: 'shepherd-combo-statuses'
 					 ,fieldLabel: 'Status'
 					 ,name: 'status'
