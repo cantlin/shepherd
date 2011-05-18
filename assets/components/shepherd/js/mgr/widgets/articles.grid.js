@@ -193,7 +193,7 @@ Shepherd.window.UpdateArticle = function(config) {
 			       mode: 'local',
 			       displayField: 'pagetitle',
 			       displayFieldTpl: '{pagetitle}',
-			       valueField: 'id',
+			       valueField: 'id'
 			       },{
 		    xtype: 'checkboxgroup'
 			       ,fieldLabel: 'Sectors'
