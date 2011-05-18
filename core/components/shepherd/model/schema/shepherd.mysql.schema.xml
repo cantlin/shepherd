@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model package="shepherd" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM">
 
-    <object class="Shepherd">
+    <object class="Shepherd" table="shepherd_shepherd" extends="xPDOSimpleObject">
     </object>
 
     <object class="Article" table="shepherd_articles" extends="xPDOSimpleObject">
