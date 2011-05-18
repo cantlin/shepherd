@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model package="shepherd" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM">
 
+    <object class="Shepherd">
+    </object>
+
     <object class="Article" table="shepherd_articles" extends="xPDOSimpleObject">
         <field key="title" dbtype="varchar" precision="255" phptype="string" null="false" default="" />
         <field key="content" dbtype="text" phptype="string" null="false" default="" />
@@ -13,6 +16,21 @@
     <object class="ArticlesResources" table="shepherd_articles_to_resources" extends="xPDOSimpleObject">
       <field key="article_id" dbtype="int" precision="11" phptype="integer" null="true" />
       <aggregate alias="Articles" class="Article" local="article_id" foreign="id" cardinality="one" owner="foreign" />
+
+      <field key="resource_id" dbtype="int" precision="11" phptype="integer" null="true" />
+      <aggregate alias="Resources" class="modResource" local="resource_id" foreign="id" cardinality="one" owner="foreign" />
+    </object>
+
+    <object class="NewsItem" table="shepherd_news_items" extends="xPDOSimpleObject">
+      <field key="title" dbtype="varchar" precision="255" phptype="string" null="false" default="" />
+      <field key="content" dbtype="text" phptype="string" null="false" default="" />
+
+      <field key="createdon" dbtype="timestamp" phptype="timestamp" default="CURRENT_TIMESTAMP" null="true" />
+    </object>
+
+    <object class="NewsResources" table="shepherd_news_items_to_resources" extends="xPDOSimpleObject">
+      <field key="news_item_id" dbtype="int" precision="11" phptype="integer" null="true" />
+      <aggregate alias="NewsItems" class="NewsItem" local="news_item_id" foreign="id" cardinality="one" owner="foreign" />
 
       <field key="resource_id" dbtype="int" precision="11" phptype="integer" null="true" />
       <aggregate alias="Resources" class="modResource" local="resource_id" foreign="id" cardinality="one" owner="foreign" />

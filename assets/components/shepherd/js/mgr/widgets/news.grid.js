@@ -1,23 +1,21 @@
-Shepherd.grid.Articles = function(config) {
+Shepherd.grid.News = function(config) {
     config = config || {};
     Ext.applyIf(config,{
-	    id: 'shepherd-grid-articles'
+	    id: 'shepherd-grid-news'
 		,url: Shepherd.config.connectorUrl
-		,baseParams: { action: 'mgr/article/getList' }
-	        ,fields: ['id'
+		,baseParams: { action: 'mgr/newsitem/getList' }
+	        ,fields: [ 'id'
 			  ,'createdon'
 			  ,'title'
 			  ,'related_to'
 			  ,'related_ids'
-			  ,'status'
 			  ,'content'
-			  ,'contacts'
-			  ,'publication']
+			  ,'contacts' ]
 		,paging: true
 		,remoteSort: true
 		,anchor: '97%'
 		,autoExpandColumn: 'title'
-                ,save_action: 'mgr/article/updateFromGrid'
+                ,save_action: 'mgr/newsitem/updateFromGrid'
 	        ,autosave: true
 		,columns: [{
 		    header: _('id')
@@ -30,12 +28,6 @@ Shepherd.grid.Articles = function(config) {
 			 ,sortable: true
 			 ,width: 52
 			 },{
-		    header: _('shepherd.article_status')
-			 ,dataIndex: 'status'
-			 ,width: 40
-			 ,sortable: true
-			 ,editor: { xtype: 'shepherd-combo-statuses' }
-			  },{
 		    header: _('shepherd.article_title')
 			 ,dataIndex: 'title'
 			 ,sortable: true
@@ -47,16 +39,11 @@ Shepherd.grid.Articles = function(config) {
 		         },{
 		    header: _('shepherd.article_related_to')
 			 ,dataIndex: 'related_to'
-			 },{
-		    header: _('shepherd.article_publication')
-			 ,dataIndex: 'publication'
-			 ,sortable: true
-			 ,width: 60
 		    }]
-		,tbar:[{
+		    ,tbar:[{
 		    xtype: 'textfield'
-		     ,id: 'articles-search-filter'
-		     ,emptyText: _('shepherd.article_search...')
+		     ,id: 'news-search-filter'
+		     ,emptyText: _('shepherd.news_search...')
 		     ,listeners: {
 		       'change': {fn:this.search,scope:this}
   		      ,'render': {fn: function(cmp) {
@@ -72,14 +59,14 @@ Shepherd.grid.Articles = function(config) {
 		    },scope:this}
 		    }
 		},{
-		    id: 'create-article-button'
-		    ,text: _('shepherd.article_create')
-		    ,handler: { xtype: 'shepherd-window-article-create' ,blankValues: true }
-		}]
+		    id: 'create-news-item-button'
+		    ,text: _('shepherd.newsitem_create')
+		    ,handler: { xtype: 'shepherd-window-newsitem-create' ,blankValues: true }
+		    }]
     });
-    Shepherd.grid.Articles.superclass.constructor.call(this,config)
+    Shepherd.grid.News.superclass.constructor.call(this,config)
 };
-Ext.extend(Shepherd.grid.Articles,MODx.grid.Grid,{
+Ext.extend(Shepherd.grid.News,MODx.grid.Grid,{
 	search: function(tf,nv,ov) {
 	    var s = this.getStore();
 	    s.baseParams.query = tf.getValue();
@@ -88,26 +75,26 @@ Ext.extend(Shepherd.grid.Articles,MODx.grid.Grid,{
 	}
 	,getMenu: function() {
 	    var m = [{
-		    text: _('shepherd.article_update')
-		    ,handler: this.updateArticle
+		    text: _('shepherd.newsitem_update')
+		    ,handler: this.updateNewsItem
 		},'-',{
-		    text: _('shepherd.article_remove')
-		    ,handler: this.removeArticle
+		    text: _('shepherd.newsitem_remove')
+		    ,handler: this.removeNewsItem
 		}];
 	    this.addContextMenuItem(m);
 	    return true;
 	}
-	,updateArticle: function(btn,e) {
-	        if (!this.updateArticleWindow) {
-		this.updateArticleWindow = MODx.load({
-			xtype: 'shepherd-window-article-update'
+	,updateNewsItem: function(btn,e) {
+	        if (!this.updateNewsItemWindow) {
+		this.updateNewsItemWindow = MODx.load({
+			xtype: 'shepherd-window-newsitem-update'
 			,record: this.menu.record
 			,listeners: {
 			    'success': {fn:this.refresh,scope:this}
 			}
 		    });
 		    } else {
-			this.updateArticleWindow.setValues(this.menu.record);
+			this.updateNewsItemWindow.setValues(this.menu.record);
 		   }
 	    if(this.menu.record.related_ids) {
 		var relatedIds = this.menu.record.related_ids.split(',');
@@ -123,36 +110,36 @@ Ext.extend(Shepherd.grid.Articles,MODx.grid.Grid,{
 			practiceAreaArray[i]['checked'] = true;
 		}
 	    }
-       	    this.updateArticleWindow.show(e.target);
+       	    this.updateNewsItemWindow.show(e.target);
             Ext.getCmp('update-contacts').setValue(relatedIds);
 	}
-	,removeArticle: function() {
+	,removeNewsItem: function() {
 	    MODx.msg.confirm({
- title: _('shepherd.article_remove')
-			,text: _('shepherd.article_remove_confirm')
+                         title: _('shepherd.newsitem_remove')
+			,text: _('shepherd.newsitem_remove_confirm')
 			,url: this.config.url
-			,params: { action: 'mgr/article/remove' ,id: this.menu.record.id }
-		    ,listeners: {
-			'success': { fn:this.refresh, scope:this }
-		    }
+			,params: { action: 'mgr/newsitem/remove' ,id: this.menu.record.id }
+		        ,listeners: {
+			   'success': { fn:this.refresh, scope:this }
+		        }
 		});
 	}
 });
-Ext.reg('shepherd-grid-articles', Shepherd.grid.Articles);
+Ext.reg('shepherd-grid-news', Shepherd.grid.News);
 
-Shepherd.window.UpdateArticle = function(config) {
+Shepherd.window.UpdateNewsItem = function(config) {
     config = config || {};
     Ext.applyIf(config,{
-	    title: _('shepherd.article_update')
+	    title: _('shepherd.newsitem_update')
 		,url: Shepherd.config.connectorUrl
-		,baseParams: { action: 'mgr/article/update' }
+		,baseParams: { action: 'mgr/newsitem/update' }
 	    ,width: 900
 	    ,fields: 
 	       [{ xtype: 'hidden'
 		      ,name: 'id'
 		  },{ 
 		  xtype: 'textfield'
-		     ,fieldLabel: _('shepherd.article_title')
+		     ,fieldLabel: _('shepherd.newsitem_title')
   		     ,name: 'title'
 		     ,width: 350
 		     },{
@@ -177,15 +164,15 @@ Shepherd.window.UpdateArticle = function(config) {
 			    template_external_list_url : "template_list.js",
 			    accessibility_focus : false
                       }
-		     ,fieldLabel: _('shepherd.article_content')
+		     ,fieldLabel: _('shepherd.newsitem_content')
 		     ,name: 'content'
-		     ,id: 'shepherd-article-update-content'
+		     ,id: 'shepherd-newsitem-update-content'
 		     ,width: 700
 		     },{
-			       id:'update-contacts',
+			       id:'update-newsitem-contacts',
 			       xtype:'superboxselect',
 			       fieldLabel: 'Contacts',
-			       emptyText: 'Select the Shepherd and Wedderburn personnel associated with this article.',
+			       emptyText: 'Select the Shepherd and Wedderburn personnel associated with this newsitem.',
 			       allowBlank:true,
 			       name: 'related_to[]',
 			       width: 700,
@@ -208,55 +195,52 @@ Shepherd.window.UpdateArticle = function(config) {
 			       ,items: practiceAreaArray
 			       },{
 		    xtype: 'textfield'
-			       ,fieldLabel: _('shepherd.article_publication')
+			       ,fieldLabel: _('shepherd.newsitem_publication')
 			       ,name: 'publication'
 			       ,width: 350
 		   }
 		  ]
     });
-    Shepherd.window.UpdateArticle.superclass.constructor.call(this,config);
+    Shepherd.window.UpdateNewsItem.superclass.constructor.call(this,config);
 };
-Ext.extend(Shepherd.window.UpdateArticle,MODx.Window);
-Ext.reg('shepherd-window-article-update', Shepherd.window.UpdateArticle);
+Ext.extend(Shepherd.window.UpdateNewsItem,MODx.Window);
+Ext.reg('shepherd-window-newsitem-update', Shepherd.window.UpdateNewsItem);
 
-Shepherd.combo.Statuses = function(config) {
+/* Shepherd.combo.Authors = function(config) {
     config = config || {};
     Ext.applyIf(config,{
-	        id: 'shepherd-combo-statuses'
-		,name: 'status'
-		,displayField: 'key'
-		,valueField: 'value'
-		,mode: 'local'
-		,store: new Ext.data.ArrayStore({
-			id: 0
-			    ,fields: ['key', 'value']
-			    ,data: [['Published', 'Published'], ['Promoted', 'Promoted'], ['Hidden', 'Hidden']]
-			    })
-
+	        id: 'shepherd-combo-authors'
+		,name: 'author'
+		,displayField: 'pagetitle'
+		,hiddenName: 'author_id'
+		,valueField: 'id'
+		,fields: ['id','pagetitle']
+		,url: Shepherd.config.connectorUrl
+		,baseParams: { action: 'mgr/newsitem/getAuthorList' }
 	});
-    Shepherd.combo.Statuses.superclass.constructor.call(this,config);
+    Shepherd.combo.Authors.superclass.constructor.call(this, config);
 };
-Ext.extend(Shepherd.combo.Statuses, MODx.combo.ComboBox);
-Ext.reg('shepherd-combo-statuses', Shepherd.combo.Statuses);
+Ext.extend(Shepherd.combo.Authors, MODx.combo.ComboBox);
+Ext.reg('shepherd-combo-authors', Shepherd.combo.Authors); */
 
-Shepherd.window.CreateArticle = function(config) {
+Shepherd.window.CreateNewsItem = function(config) {
     config = config || {};
     Ext.applyIf(config,{
-	    title: _('shepherd.article_create')
+	    title: _('shepherd.newsitem_create')
 	   ,url: Shepherd.config.connectorUrl
-	   ,baseParams: { action: 'mgr/article/create' }
+	   ,baseParams: { action: 'mgr/newsitem/create' }
 	   ,width: 900
 	   ,fields: 
 	      [{
 	      xtype: 'textfield'
-		,fieldLabel: _('shepherd.article_title')
+		,fieldLabel: _('shepherd.newsitem_title')
   		,name: 'title'
 		,width: 300
 		},{
 	      xtype: 'tinymce'
-	        ,fieldLabel: _('shepherd.article_content')
+	        ,fieldLabel: _('shepherd.newsitem_content')
 		,name: 'content'
-		,id: 'shepherd-article-create-content'
+		,id: 'shepherd-newsitem-create-content'
 		,width: 700
 		,tinymceSettings: {
 		  theme : "advanced",
@@ -280,9 +264,9 @@ Shepherd.window.CreateArticle = function(config) {
 		}
 	      },{
 	      xtype:'superboxselect'
-	        ,id:'create-contacts'
+	        ,id:'create-newsitem-contacts'
 		,fieldLabel: _('shepherd.article_contacts')
-		,emptyText: 'Select the Shepherd and Wedderburn personnel associated with this article.'
+		,emptyText: 'Select the Shepherd and Wedderburn personnel associated with this newsitem.'
 		,allowBlank:true
 		,name: 'related_to[]'
 		,width: 700
@@ -303,15 +287,10 @@ Shepherd.window.CreateArticle = function(config) {
 		,name: 'practice_areas'
 		,columns: [230, 230, 1.0]
 		,items: practiceAreaArray
-	      },{
-	      xtype: 'textfield'
-		,fieldLabel: _('shepherd.article_publication')
-  		,name: 'publication'
-		,width: 350
 	      }
 	  ]
     });
-    Shepherd.window.CreateArticle.superclass.constructor.call(this,config);
+    Shepherd.window.CreateNewsItem.superclass.constructor.call(this,config);
 };
-Ext.extend(Shepherd.window.CreateArticle, MODx.Window);
-Ext.reg('shepherd-window-article-create', Shepherd.window.CreateArticle);
+Ext.extend(Shepherd.window.CreateNewsItem, MODx.Window);
+Ext.reg('shepherd-window-newsitem-create', Shepherd.window.CreateNewsItem);

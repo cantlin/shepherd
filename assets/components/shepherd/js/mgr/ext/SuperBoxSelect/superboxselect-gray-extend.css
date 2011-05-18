@@ -25,7 +25,10 @@ body.ext-ie6 .x-superboxselect-item {margin: 2px 1px 2px 1px; line-height: 1.2em
 
 /* Begin Hack */
 
-input#update-contacts, input#create-contacts {
+input#update-contacts,
+input#create-contacts,
+input#update-newsitem-contacts,
+input#create-newsitem-contacts {
        background-color:transparent;
 }
 .x-superboxselect-btns {

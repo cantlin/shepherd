@@ -7,6 +7,9 @@ require_once MODX_CONNECTORS_PATH.'index.php';
 $corePath = $modx->getOption('shepherd.core_path',null,$modx->getOption('core_path').'components/shepherd/');
 
 require_once $corePath.'model/shepherd/shepherd.class.php';
+//require_once $corePath.'model/shepherd/article.class.php';
+//require_once $corePath.'model/shepherd/newsitem.class.php';
+
 $modx->shepherd = new Shepherd($modx);
 
 $modx->lexicon->load('shepherd:default');
