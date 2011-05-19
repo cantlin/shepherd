@@ -10,6 +10,7 @@ Shepherd.grid.News = function(config) {
 			  ,'related_to'
 			  ,'related_ids'
 			  ,'content'
+			  ,'description'
 			  ,'contacts' ]
 		,paging: true
 		,remoteSort: true
@@ -110,8 +111,8 @@ Ext.extend(Shepherd.grid.News,MODx.grid.Grid,{
 			practiceAreaArray[i]['checked'] = true;
 		}
 	    }
+            Ext.getCmp('update-newsitem-contacts').setValue(relatedIds);
        	    this.updateNewsItemWindow.show(e.target);
-            Ext.getCmp('update-contacts').setValue(relatedIds);
 	}
 	,removeNewsItem: function() {
 	    MODx.msg.confirm({
@@ -133,9 +134,9 @@ Shepherd.window.UpdateNewsItem = function(config) {
 	    title: _('shepherd.newsitem_update')
 		,url: Shepherd.config.connectorUrl
 		,baseParams: { action: 'mgr/newsitem/update' }
-	    ,width: 900
-	    ,fields: 
-	       [{ xtype: 'hidden'
+	        ,width: 900
+		,fields: [{
+		  xtype: 'hidden'
 		      ,name: 'id'
 		  },{ 
 		  xtype: 'textfield'
@@ -143,63 +144,62 @@ Shepherd.window.UpdateNewsItem = function(config) {
   		     ,name: 'title'
 		     ,width: 350
 		     },{
-		 xtype: 'tinymce'
-			,tinymceSettings: {
+	  	  xtype: 'tinymce'
+		    ,fieldLabel: _('shepherd.newsitem_description')
+		    ,tinymceSettings: {
 			theme : "advanced",
-			    theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|"
-			    + ",justifyleft,justifycenter,justifyright,justifyfull,|,styleselect"
-			    + ",formatselect,fontselect,fontsizeselect",
-			    theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|"
-			    + ",search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|"
-			    + ",undo,redo,|,link,unlink,anchor,image,cleanup,code,|"
-			    + ",insertdate,inserttime,preview,|,forecolor,backcolor",
-			    theme_advanced_buttons3: "",
-			    theme_advanced_toolbar_location : "top",
-			    theme_advanced_toolbar_align : "left",
-			    theme_advanced_statusbar_location : "bottom",
-			    theme_advanced_resizing : false,
-			    extended_valid_elements : "a[name|href|target|title|onclick]"
-			    + ",img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name]"
-			    + ",hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]",
-			    template_external_list_url : "template_list.js",
-			    accessibility_focus : false
-                      }
-		     ,fieldLabel: _('shepherd.newsitem_content')
-		     ,name: 'content'
-		     ,id: 'shepherd-newsitem-update-content'
-		     ,width: 700
-		     },{
-			       id:'update-newsitem-contacts',
-			       xtype:'superboxselect',
-			       fieldLabel: 'Contacts',
-			       emptyText: 'Select the Shepherd and Wedderburn personnel associated with this newsitem.',
-			       allowBlank:true,
-			       name: 'related_to[]',
-			       width: 700,
-			       store: peopleStore,
-			       mode: 'local',
-			       displayField: 'pagetitle',
-			       displayFieldTpl: '{pagetitle}',
-			       valueField: 'id'
-			       },{
-		    xtype: 'checkboxgroup'
-			       ,fieldLabel: 'Sectors'
-			       ,name: 'sectors'
-			       ,columns: [230, 230, 1.0]
-			       ,items: sectorArray
-			       },{
-		    xtype: 'checkboxgroup'
-			       ,fieldLabel: 'Practice Areas'
-			       ,name: 'practice_areas'
-			       ,columns: [230, 230, 1.0]
-			       ,items: practiceAreaArray
-			       },{
-		    xtype: 'textfield'
-			       ,fieldLabel: _('shepherd.newsitem_publication')
-			       ,name: 'publication'
-			       ,width: 350
-		   }
-		  ]
+			theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|"
+			  + ",formatselect,fontsizeselect",
+			theme_advanced_buttons2 : "",
+			theme_advanced_buttons3: "",
+			theme_advanced_toolbar_location : "top",
+			theme_advanced_toolbar_align : "left",
+			theme_advanced_statusbar_location : "bottom",
+			theme_advanced_resizing : false,
+			extended_valid_elements : "a[name|href|target|title|onclick]"
+	                  + ",img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name]"
+	                  + ",hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]",
+			template_external_list_url : "template_list.js",
+	                accessibility_focus : false
+		     }
+		    ,name: 'description'
+		    ,id: 'shepherd-newsitem-update-description'
+		    ,width: 700
+		    ,height: 60
+		    },{
+	  	  xtype: 'tinymce'
+		    ,fieldLabel: _('shepherd.newsitem_content')
+		    ,tinymceSettings: Shepherd.config.tinymce
+		    ,name: 'content'
+		    ,id: 'shepherd-newsitem-update-content'
+		    ,width: 700
+		    ,height:200
+		    },{
+	          xtype:'superboxselect'
+		    ,id:'update-newsitem-contacts'
+		    ,fieldLabel: 'Contacts'
+		    ,emptyText: 'Select the Shepherd and Wedderburn personnel associated with this newsitem.'
+		    ,allowBlank:true
+		    ,name: 'related_to[]'
+		    ,width: 700
+		    ,store: peopleStore
+		    ,mode: 'local'
+		    ,displayField: 'pagetitle'
+		    ,displayFieldTpl: '{pagetitle}'
+		    ,valueField: 'id'
+		    },{
+		  xtype: 'checkboxgroup'
+		    ,fieldLabel: 'Sectors'
+		    ,name: 'sectors'
+		    ,columns: [230, 230, 1.0]
+		    ,items: sectorArray
+		    },{
+		  xtype: 'checkboxgroup'
+		    ,fieldLabel: 'Practice Areas'
+		    ,name: 'practice_areas'
+		    ,columns: [230, 230, 1.0]
+		    ,items: practiceAreaArray
+		    }]
     });
     Shepherd.window.UpdateNewsItem.superclass.constructor.call(this,config);
 };
@@ -208,7 +208,7 @@ Ext.reg('shepherd-window-newsitem-update', Shepherd.window.UpdateNewsItem);
 
 /* Shepherd.combo.Authors = function(config) {
     config = config || {};
-    Ext.applyIf(config,{
+    Ext.applyIf(config, {
 	        id: 'shepherd-combo-authors'
 		,name: 'author'
 		,displayField: 'pagetitle'
@@ -238,31 +238,36 @@ Shepherd.window.CreateNewsItem = function(config) {
 		,width: 300
 		},{
 	      xtype: 'tinymce'
-	        ,fieldLabel: _('shepherd.newsitem_content')
-		,name: 'content'
-		,id: 'shepherd-newsitem-create-content'
-		,width: 700
-		,tinymceSettings: {
+	        ,fieldLabel: _('shepherd.newsitem_description')
+	        ,tinymceSettings: {
 		  theme : "advanced",
 		  theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|"
-		    + ",justifyleft,justifycenter,justifyright,justifyfull,|,styleselect"
-		    + ",formatselect,fontselect,fontsizeselect",
-		  theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|"
-		    + ",search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|"
-		    + ",undo,redo,|,link,unlink,anchor,image,cleanup,code,|"
-		    + ",insertdate,inserttime,preview,|,forecolor,backcolor",
+		    + ",formatselect,fontsizeselect",
+		  theme_advanced_buttons2 : "",
 		  theme_advanced_buttons3: "",
 		  theme_advanced_toolbar_location : "top",
 		  theme_advanced_toolbar_align : "left",
 		  theme_advanced_statusbar_location : "bottom",
 		  theme_advanced_resizing : false,
 		  extended_valid_elements : "a[name|href|target|title|onclick]"
-		    + ",img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name]"
-		    + ",hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]",
+	            + ",img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name]"
+	            + ",hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]",
 		  template_external_list_url : "template_list.js",
-		  accessibility_focus : false
+	          accessibility_focus : false
 		}
-	      },{
+		,name: 'description'
+		,id: 'shepherd-newsitem-create-description'
+		,width: 700
+		,height: 60
+		},{
+	      xtype: 'tinymce'
+		,fieldLabel: _('shepherd.newsitem_content')
+		,tinymceSettings: Shepherd.config.tinymce
+		,name: 'content'
+		,id: 'shepherd-newsitem-create-content'
+		,width: 700
+		,height:200
+		},{
 	      xtype:'superboxselect'
 	        ,id:'create-newsitem-contacts'
 		,fieldLabel: _('shepherd.article_contacts')

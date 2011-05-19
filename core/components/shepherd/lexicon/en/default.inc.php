@@ -15,7 +15,7 @@ $_lang['shepherd.article_err_save'] = 'An error occurred while trying to save th
 $_lang['shepherd.article_remove_confirm'] = 'Are you sure you want to remove this article?';
 $_lang['shepherd.downloads'] = 'Downloads';
 $_lang['shepherd.location'] = 'Location';
-$_lang['shepherd.management'] = 'Shepherd Article Manager';
+$_lang['shepherd.management'] = 'Shepherd Content Manager';
 $_lang['shepherd.article_management_desc'] = 'Welcome to Shepherd. You can update articles by right clicking on them, or quick-edit some fields by double clicking on them.';
 
 $_lang['shepherd.article_title'] = 'Title';
@@ -36,6 +36,10 @@ $_lang['shepherd.news'] = 'News';
 $_lang['shepherd.news_management_desc'] = 'You can update news items by right clicking on them, or quick-edit some fields by double clicking on them.';
 $_lang['shepherd.newsitem_create'] = 'New News Item';
 $_lang['shepherd.newsitem_remove_confirm'] = 'Are you sure you want to remove this news item?';
+
+$_lang['shepherd.newsitem_title'] = 'Title';
+$_lang['shepherd.newsitem_description'] = 'Description';
+$_lang['shepherd.newsitem_content'] = 'Content';
 
 $_lang['shepherd.newsitem_remove'] = 'Remove News Item';
 $_lang['shepherd.newsitem_update'] = 'Update News Item';

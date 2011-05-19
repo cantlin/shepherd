@@ -5,6 +5,7 @@ $xpdo_meta_map['NewsItem']= array (
   'fields' => 
   array (
     'title' => '',
+    'description' => '',
     'content' => '',
     'createdon' => 'CURRENT_TIMESTAMP',
   ),
@@ -14,6 +15,13 @@ $xpdo_meta_map['NewsItem']= array (
     array (
       'dbtype' => 'varchar',
       'precision' => '255',
+      'phptype' => 'string',
+      'null' => false,
+      'default' => '',
+    ),
+    'description' => 
+    array (
+      'dbtype' => 'text',
       'phptype' => 'string',
       'null' => false,
       'default' => '',

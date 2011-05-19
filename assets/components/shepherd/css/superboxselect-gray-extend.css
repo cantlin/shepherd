@@ -39,8 +39,12 @@ input#create-newsitem-contacts {
 -moz-border-radius:2px;
 border-right:1px solid #C5C5C5;
 }
-.x-superboxselect-item-hover {background:#e7e7e7; border:1px solid #d7d7d7;}
-.x-superboxselect-item:hover {border: 1px solid #949494;}
-.x-superboxselect-item {position: relative; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; o-border-radius: 6px; khtml-border-radius: 6px; border: 1px solid #d7d7d7; background-color: #e7e7e7; padding: 1px 17px 1px 5px !important; text-shadow:none; }
-.x-superboxselect-item-focus {border-color: #8b8b8b; background: #8b8b8b;}
+.x-superboxselect-item-hover {background:#fff; border:1px solid #d7d7d7;}
+.x-superboxselect-item:hover {border:1px solid #d7d7d7;}
+.x-superboxselect-item {position: relative; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; o-border-radius: 6px; khtml-border-radius: 6px; border: 1px solid #d7d7d7; background-color: #fff; padding: 1px 17px 1px 5px !important; text-shadow:none; }
+.x-superboxselect-item-focus {background: #8b8b8b;}
 .x-superboxselect-item-close {border: none; cursor: default; font-size: 1px; height: 16px;padding:0; position: absolute; right: 0px; top: 2px; width: 13px;display:block;cursor:pointer;}
+
+.x-superboxselect-item-close { background-image: url('../js/mgr/ext/SuperBoxSelect/close.png'); }
+.x-superboxselect-btn-clear { background-image: url('../js/mgr/ext/SuperBoxSelect/clear.png'); }
+.x-superboxselect-btn-expand { background-image: url('../js/mgr/ext/SuperBoxSelect/expand.png'); }
